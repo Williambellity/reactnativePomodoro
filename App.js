@@ -124,15 +124,6 @@ reset = () => {
         </View> 
         
 
-
-
-        <TouchableOpacity onPress={this.start}>
-            <View style = {styles.buttonStart}
-                  >
-                <Text style = {styles.buttonText}>Start</Text>
-            </View>
-        </TouchableOpacity>
-
       </View>
     );
   }
