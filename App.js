@@ -9,8 +9,6 @@ import Input from './Input'
 import SSRButton from './SSRButton'
 
 export default class App extends React.Component {
-
-
   state = {
     buttonText: 'Start',
     showForm: false,
@@ -33,7 +31,7 @@ export default class App extends React.Component {
       short: shortTime,
       showForm: !prevState.showForm,
     }))
-    this.reset()
+    this.handleReset()
   }
 
   handleReset = () => {
@@ -83,39 +81,38 @@ export default class App extends React.Component {
       this.setState(prevState => ({
         longTimer: false,
         counter: +prevState.short,
-        minutes: ~~((+prevState.short)/60),
-        secondes: '00', 
       }))
+      this.vibrate()
     }
     if (!this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
         longTimer: false,
         counter: +prevState.long,
-        minutes: ~~((+prevState.long)/60),
-        secondes: '00', 
       }))
+      this.vibrate()
     }
+    this.setState(prevState => ({
+      minutes: ~~((+prevState.counter)/60),
+      secondes: '00'
+    }))
     if (this.state.active && this.state.counter>=0) {
       let currentCounter = this.state.counter
       this.setState({
           counter: currentCounter - 1,
-          minutes: ~~(currentCounter/60),
-          secondes: ~~(currentCounter%60)  
+          minutes: ~~(currentCounter / 60),
+          secondes: currentCounter % 60,
       });
       if (this.state.secondes < 10){
         this.setState({
-          secondes: '0'+this.state.secondes
+          secondes: '0' + this.state.secondes
         })
       }
     }
-
-    
   }
   
   render() {
 
     if (this.state.showForm) return <Input onSubmit={this.getNewTimer}/>
-
 
     return (
       <View style={styles.container}>
