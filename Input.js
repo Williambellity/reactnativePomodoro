@@ -7,25 +7,26 @@ import PropTypes from 'prop-types';
 export default class Input extends React.Component {
     static propTypes = {
         newTimer: PropTypes.func,
+        longTime: PropTypes.number,
+        shortTime: PropTypes.number,
     }
 
     state = {
-        longTime: '',
-        shortTime: '',
+        longTimeMinutes: '',
+        longTimeSeconds: '',
+        shortTimeMinutes: '',
+        shortTimeSeconds: '',
         isFormValid: false,
     }
 
-
-    
-
     handleSubmit = () => {
-        if (+this.state.longTime >= 0, +this.state.shortTime >= 0) {
+        if (+this.state.longTimeMinutes >= 0, +this.state.shortTimeMinutes >= 0) {
             this.props.onSubmit(this.state)
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.longTime !== prevState.longTime || this.state.shortTime !== prevState.shortTime){
+        if (this.state.longTimeMinutes !== prevState.longTimeMinutes || this.state.shortTimeMinutes !== prevState.shortTimeMinutes){
             this.validateForm()
         }
     }
@@ -37,7 +38,7 @@ export default class Input extends React.Component {
     }
 
     validateForm = () => {
-        if (+this.state.longTime >= 0 && +this.state.shortTime >= 0) {
+        if (+this.state.longTimeMinutes >= 0 && +this.state.shortTimeMinutes >= 0) {
             this.setState({isFormValid: true})
         } else {
             this.setState({isFormValid: false})
@@ -49,17 +50,47 @@ export default class Input extends React.Component {
             <KeyboardAvoidingView behaviour='padding'  style={styles.container}>
                 <TextInput 
                     style={styles.input} 
-                    value={this.state.longTime} 
-                    onChangeText={this.getHandler('longTime')} //onChangeText props
+                    // value={this.state.longTimeMinutes} 
+                    onChangeText={this.getHandler('longTimeMinutes')} //onChangeText props
                     keyboardType="numeric"
-                    placeholder="Session Time"
+                    placeholder="Exercise Time Minutes"
+                    placeholderTextColor='#000000'
+                    defaultValue={~~(+this.props.longTime/60)}
+                    maxLength={3}
+                    textAlign='center'
                 />
                 <TextInput 
                     style={styles.input} 
-                    value={this.state.shortTime}
-                    onChangeText={this.getHandler('shortTime')}
+                    // value={this.state.longTimeSeconds} 
+                    onChangeText={this.getHandler('longTimeSeconds')} //onChangeText props
                     keyboardType="numeric"
-                    placeholder="Break Time"
+                    placeholder="Exercise Time Seconds"
+                    placeholderTextColor='#000000'
+                    defaultValue={this.props.longTime%60}
+                    maxLength={2}
+                    textAlign='center'
+                />
+                <TextInput 
+                    style={styles.input} 
+                    // value={this.state.shortTime}
+                    onChangeText={this.getHandler('shortTimeMinutes')}
+                    keyboardType="numeric"
+                    placeholder="Break Time Minutes"
+                    placeholderTextColor='#000000'
+                    defaultValue={~~(this.props.shortTime/60)}
+                    maxLength={3}
+                    textAlign='center'
+                />
+                <TextInput 
+                    style={styles.input} 
+                    // value={this.state.shortTime}
+                    onChangeText={this.getHandler('shortTimeSeconds')}
+                    keyboardType="numeric"
+                    placeholder="Break Time Seconds"
+                    placeholderTextColor='#000000'
+                    defaultValue={this.props.shortTime%60}
+                    maxLength={2}
+                    textAlign='center'
                 />
                 <Button title="Submit" onPress={this.handleSubmit} disabled={!this.state.isFormValid} />
             </KeyboardAvoidingView>
@@ -70,11 +101,12 @@ export default class Input extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#C0C0C0',
         paddingTop: Constants.statusBarHeight,
         justifyContent: 'center',
     },
     input: {
+        backgroundColor: '#fff',
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 3,

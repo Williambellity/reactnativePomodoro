@@ -7,14 +7,16 @@ import Timer from './Timer'
 import {Vibration} from 'react-native'
 import Input from './Input'
 import SSRButton from './SSRButton'
+import SettingsButton from './SettingsButton'
 
 export default class App extends React.Component {
   state = {
+    bgcolor: '#F8B3BC',
     buttonText: 'Start',
     showForm: false,
     longTimer: true,
     long: 1500,
-    short: '',
+    short: 300,
     active: false,
     counter: 1500,
     minutes: 25,
@@ -24,8 +26,8 @@ export default class App extends React.Component {
   vibrate = () => Vibration.vibrate([500, 500, 500])
 
   getNewTimer = newTimer => {
-    let longTime = 60*(+newTimer.longTime)
-    let shortTime = 60*(+newTimer.shortTime)
+    let longTime = 60*(+newTimer.longTimeMinutes) + +newTimer.longTimeSeconds
+    let shortTime = 60*(+newTimer.shortTimeMinutes) + +newTimer.shortTimeSeconds
     this.setState(prevState => ({
       long: longTime,
       short: shortTime,
@@ -41,7 +43,7 @@ export default class App extends React.Component {
     active: false,
     counter: +prevState.long,
     minutes: ~~((+prevState.long)/60),
-    secondes: '00',
+    secondes: prevState.long%60,
     }));
   }
 
@@ -79,22 +81,27 @@ export default class App extends React.Component {
   tick = () => {
     if (this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
-        longTimer: false,
+        longTimer: !prevState.longTimer,
         counter: +prevState.short,
+        bgcolor: '#AAF0D1',
       }))
-      this.vibrate()
+      
     }
     if (!this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
-        longTimer: false,
+        longTimer: !prevState.longTimer,
         counter: +prevState.long,
+        bgcolor: '#F8B3BC',
+      }))
+      
+    }
+    if (this.state.counter ==0){
+      this.setState(prevState => ({
+        minutes: ~~((+prevState.counter)/60),
+        secondes: +prevState.counter%60
       }))
       this.vibrate()
     }
-    this.setState(prevState => ({
-      minutes: ~~((+prevState.counter)/60),
-      secondes: '00'
-    }))
     if (this.state.active && this.state.counter>=0) {
       let currentCounter = this.state.counter
       this.setState({
@@ -112,11 +119,19 @@ export default class App extends React.Component {
   
   render() {
 
-    if (this.state.showForm) return <Input onSubmit={this.getNewTimer}/>
+    if (this.state.showForm) return <Input 
+                                      onSubmit={this.getNewTimer}
+                                      longTime={this.state.longTime}
+                                      shortTime={this.state.shortTime} />
+
+    const colorStyles ={
+      backgroundColor: this.state.bgcolor,
+    }
+
 
     return (
-      <View style={styles.container}>
-        <Button color='#f194ff'title='Settings' onPress={this.toggleSettings}/>
+      <View style={[styles.container, colorStyles]}>
+        <SettingsButton onPress={this.toggleSettings} />
         <Timer 
           minutes={this.state.minutes.toString()}
           secondes={this.state.secondes.toString()} 
@@ -136,10 +151,10 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
     flex: 1,
-    backgroundColor: '#F8B3BC',
+    // backgroundColor: this.state.bgcolor,
     alignItems: 'center',
   },
 });
 
-// Rendre les bouttons en touchableOpacity 
+// Changer l'input en minute:secondes au lieu de minutes
 
