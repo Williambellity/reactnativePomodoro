@@ -6,11 +6,13 @@ import {vibrate} from './utils'
 import Timer from './Timer'
 import {Vibration} from 'react-native'
 import Input from './Input'
+import SSRButton from './SSRButton'
 
 export default class App extends React.Component {
 
 
   state = {
+    buttonText: 'Start',
     showForm: false,
     longTimer: true,
     long: 1500,
@@ -34,8 +36,9 @@ export default class App extends React.Component {
     this.reset()
   }
 
-reset = () => {
+  handleReset = () => {
   this.setState(prevState => ({
+    buttonText: 'Start',
     longTimer: true,
     active: false,
     counter: +prevState.long,
@@ -45,16 +48,20 @@ reset = () => {
   }
 
 
-  start = () => {
-    this.setState({
-      active: true,
-    })
-  }
-
-  stop = () => {
-    this.setState({
-      active: false,
-    })
+  handleStartStop = () => {
+    this.setState(prevState => ({
+      active: !prevState.active,
+    }))
+    if (this.state.active) {
+      this.setState({
+        buttonText: 'Start'
+      })
+    }
+    else{
+      this.setState({
+        buttonText: 'Stop'
+      })
+    }
   }
 
   toggleSettings = () => {
@@ -117,13 +124,12 @@ reset = () => {
           minutes={this.state.minutes.toString()}
           secondes={this.state.secondes.toString()} 
           />
-        <View style={styles.buttonSSR}>
-          <Button title='Start' onPress={this.start} disabled={this.state.active}/>
-          <Button title='Stop' onPress={this.stop} disabled={!this.state.active}/>
-          <Button title='Reset' onPress={this.reset}/> 
-        </View> 
         
-
+        <SSRButton 
+          startStop={this.handleStartStop} 
+          reset={this.handleReset}
+          text={this.state.buttonText}
+           />
       </View>
     );
   }
@@ -135,24 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8B3BC',
     alignItems: 'center',
-    
-    
   },
-  buttonSSR: {
-    flexDirection: 'row',
-    margin:10,
-  },
-  buttonStart: {
-    backgroundColor: '#FF7F50',
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    borderRadius: 30,
-    width: 120,
-    height: 60,
-  },
-  buttonText: {
-    fontSize:20,
-  }
 });
 
 // Rendre les bouttons en touchableOpacity 
