@@ -18,19 +18,15 @@ export default class App extends React.Component {
     break: 300,
     active: false,
     counter: 1500,
-    minutes: 25,
-    secondes: '00',
-    text: 'Work Time',
   };
 
   vibrate = () => Vibration.vibrate([500, 500, 500])
 
   getNewTimer = newTimer => {
-    let longTime = 60*(+newTimer.longTimeMinutes) + +newTimer.longTimeSeconds
-    let breakTime = 60*(+newTimer.breakTimeMinutes) + +newTimer.breakTimeSeconds
+
     this.setState(prevState => ({
-      long: longTime,
-      break: breakTime,
+      long: 60*(+newTimer.longTimeMinutes) + +newTimer.longTimeSeconds,
+      break: 60*(+newTimer.breakTimeMinutes) + +newTimer.breakTimeSeconds,
       showForm: !prevState.showForm,
     }))
     this.handleReset()
@@ -46,11 +42,8 @@ export default class App extends React.Component {
   this.setState(prevState => ({
     buttonText: 'Start',
     longTimer: true,
-    text: 'Work Time',
     active: false,
     counter: +prevState.long,
-    minutes: ~~((+prevState.long)/60),
-    secondes: (prevState.long%60 < 10)?'0'+prevState.long%60:prevState.long%60,
     }));
   }
 
@@ -58,17 +51,8 @@ export default class App extends React.Component {
   handleStartStop = () => {
     this.setState(prevState => ({
       active: !prevState.active,
+      buttonText: (!prevState.active)?'Stop':'Start'
     }))
-    if (this.state.active) {
-      this.setState({
-        buttonText: 'Start'
-      })
-    }
-    else{
-      this.setState({
-        buttonText: 'Stop'
-      })
-    }
   }
 
   toggleSettings = () => {
@@ -89,7 +73,6 @@ export default class App extends React.Component {
     if (this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
-        text: 'Break Time',
         counter: +prevState.break,
       }))
       
@@ -97,24 +80,13 @@ export default class App extends React.Component {
     if (!this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
-        text: 'Work Time',
         counter: +prevState.long,
-      }))
-      
-    }
-    if (this.state.counter ==0){
-      this.setState(prevState => ({
-        minutes: ~~((+prevState.counter)/60),
-        secondes: +prevState.counter%60
-      }))
-      this.vibrate()
+      }))  
     }
     if (this.state.active && this.state.counter>=0) {
       let currentCounter = this.state.counter
       this.setState({
           counter: currentCounter - 1,
-          minutes: ~~(currentCounter / 60),
-          secondes: (currentCounter%60 < 10)?'0'+currentCounter%60:currentCounter%60,
       });
     }
   }
@@ -138,9 +110,9 @@ export default class App extends React.Component {
         <SettingsButton onPress={this.toggleSettings} />
         
         <Timer 
-          minutes={this.state.minutes.toString()}
-          secondes={this.state.secondes.toString()} 
-          text={this.state.text}
+          minutes={~~((+this.state.counter)/60)}
+          secondes={(this.state.counter%60 < 10)?'0'+this.state.counter%60:this.state.counter%60} 
+          text={(this.state.longTimer)?'Work Time':'Break Time'}
           />
         
         <SSRButton 
@@ -157,7 +129,6 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
     flex: 1,
-    // backgroundColor: this.state.bgcolor,
     alignItems: 'center',
   },
 });
