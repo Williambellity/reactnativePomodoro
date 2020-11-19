@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, TouchableHighlight } 
 import {vibrate} from './utils'
 import Timer from './Timer'
 import {Vibration} from 'react-native'
-import Input from './Input'
+import Settings from './Settings'
 import SSRButton from './SSRButton'
 import SettingsButton from './SettingsButton'
 
@@ -36,6 +36,12 @@ export default class App extends React.Component {
     this.handleReset()
   }
 
+  handleGoBack = () => {
+    this.setState(prevState => ({
+      showForm: !prevState.showForm,
+    }))
+  }
+
   handleReset = () => {
   this.setState(prevState => ({
     buttonText: 'Start',
@@ -43,7 +49,7 @@ export default class App extends React.Component {
     active: false,
     counter: +prevState.long,
     minutes: ~~((+prevState.long)/60),
-    secondes: prevState.long%60,
+    secondes: '0' + prevState.long%60,
     }));
   }
 
@@ -119,15 +125,15 @@ export default class App extends React.Component {
   
   render() {
 
-    if (this.state.showForm) return <Input 
+    if (this.state.showForm) return <Settings 
                                       onSubmit={this.getNewTimer}
-                                      longTime={this.state.longTime}
-                                      shortTime={this.state.shortTime} />
+                                      longTime={this.state.long}
+                                      shortTime={this.state.short}
+                                      goBack={this.handleGoBack} />
 
     const colorStyles ={
       backgroundColor: this.state.bgcolor,
     }
-
 
     return (
       <View style={[styles.container, colorStyles]}>
