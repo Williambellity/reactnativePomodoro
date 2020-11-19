@@ -8,14 +8,15 @@ export default class Settings extends React.Component {
     static propTypes = {
         newTimer: PropTypes.func,
         longTime: PropTypes.number,
-        shortTime: PropTypes.number,
+        breakTime: PropTypes.number,
+        goBack: PropTypes.func,
     }
 
     state = {
         longTimeMinutes: (~~(+this.props.longTime/60)).toString(),
         longTimeSeconds: (this.props.longTime%60).toString(),
-        shortTimeMinutes: (~~(this.props.shortTime/60)).toString(),
-        shortTimeSeconds: (this.props.shortTime%60).toString(),
+        breakTimeMinutes: (~~(this.props.breakTime/60)).toString(),
+        breakTimeSeconds: (this.props.breakTime%60).toString(),
     }
 
     handleSubmit = () => {
@@ -74,18 +75,18 @@ export default class Settings extends React.Component {
                     <View style={styles.MinSecRow}>
                     <TextInput 
                         style={styles.input} 
-                        onChangeText={this.getHandler('shortTimeMinutes')}
+                        onChangeText={this.getHandler('breakTimeMinutes')}
                         keyboardType="numeric"
-                        defaultValue={(~~(this.props.shortTime/60)).toString()}
+                        defaultValue={(~~(this.props.breakTime/60)).toString()}
                         maxLength={3}
                         textAlign='center'
                     />
                     <Text>:</Text>
                     <TextInput 
                         style={styles.input} 
-                        onChangeText={this.getHandler('shortTimeSeconds')}
+                        onChangeText={this.getHandler('breakTimeSeconds')}
                         keyboardType="numeric"
-                        defaultValue={(this.props.shortTime%60).toString()}
+                        defaultValue={(this.props.breakTime%60).toString()}
                         maxLength={2}
                         textAlign='center'
                     />

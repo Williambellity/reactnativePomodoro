@@ -11,12 +11,11 @@ import SettingsButton from './SettingsButton'
 
 export default class App extends React.Component {
   state = {
-    bgcolor: '#F8B3BC',
     buttonText: 'Start',
     showForm: false,
     longTimer: true,
     long: 1500,
-    short: 300,
+    break: 300,
     active: false,
     counter: 1500,
     minutes: 25,
@@ -28,10 +27,10 @@ export default class App extends React.Component {
 
   getNewTimer = newTimer => {
     let longTime = 60*(+newTimer.longTimeMinutes) + +newTimer.longTimeSeconds
-    let shortTime = 60*(+newTimer.shortTimeMinutes) + +newTimer.shortTimeSeconds
+    let breakTime = 60*(+newTimer.breakTimeMinutes) + +newTimer.breakTimeSeconds
     this.setState(prevState => ({
       long: longTime,
-      short: shortTime,
+      break: breakTime,
       showForm: !prevState.showForm,
     }))
     this.handleReset()
@@ -51,20 +50,8 @@ export default class App extends React.Component {
     active: false,
     counter: +prevState.long,
     minutes: ~~((+prevState.long)/60),
-    bgcolor: '#F8B3BC',
-    
+    secondes: (prevState.long%60 < 10)?'0'+prevState.long%60:prevState.long%60,
     }));
-  if (+this.state.long%60 < 10)
-  {
-    this.setState(prevState => ({
-      secondes: '0' + prevState.long%60,
-    }))
-  }
-  else {
-    this.setState(prevState => ({
-      secondes: prevState.long%60,
-    }))
-  }
   }
 
 
@@ -103,8 +90,7 @@ export default class App extends React.Component {
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
         text: 'Break Time',
-        counter: +prevState.short,
-        bgcolor: '#AAF0D1',
+        counter: +prevState.break,
       }))
       
     }
@@ -113,7 +99,6 @@ export default class App extends React.Component {
         longTimer: !prevState.longTimer,
         text: 'Work Time',
         counter: +prevState.long,
-        bgcolor: '#F8B3BC',
       }))
       
     }
@@ -129,13 +114,8 @@ export default class App extends React.Component {
       this.setState({
           counter: currentCounter - 1,
           minutes: ~~(currentCounter / 60),
-          secondes: currentCounter % 60,
+          secondes: (currentCounter%60 < 10)?'0'+currentCounter%60:currentCounter%60,
       });
-      if (this.state.secondes < 10){
-        this.setState({
-          secondes: '0' + this.state.secondes
-        })
-      }
     }
   }
   
@@ -144,11 +124,11 @@ export default class App extends React.Component {
     if (this.state.showForm) return <Settings 
                                       onSubmit={this.getNewTimer}
                                       longTime={this.state.long}
-                                      shortTime={this.state.short}
+                                      breakTime={this.state.break}
                                       goBack={this.handleGoBack} />
 
     const colorStyles ={
-      backgroundColor: this.state.bgcolor,
+      backgroundColor: (this.state.longTimer)?'#F8B3BC':'#AAF0D1',
     }
 
     
