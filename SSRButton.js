@@ -28,7 +28,6 @@ export default class SSRButton extends React.Component {
 
 const styles = StyleSheet.create({
     buttonStart: {
-        // backgroundColor: '#FF7F50',
         alignItems: 'center', 
         justifyContent: 'center', 
         borderRadius: 30,

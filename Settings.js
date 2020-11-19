@@ -12,28 +12,21 @@ export default class Settings extends React.Component {
     }
 
     state = {
-        longTimeMinutes: '',
-        longTimeSeconds: '',
-        shortTimeMinutes: '',
-        shortTimeSeconds: '',
-        isFormValid: false,
+        longTimeMinutes: (~~(+this.props.longTime/60)).toString(),
+        longTimeSeconds: (this.props.longTime%60).toString(),
+        shortTimeMinutes: (~~(this.props.shortTime/60)).toString(),
+        shortTimeSeconds: (this.props.shortTime%60).toString(),
     }
 
     handleSubmit = () => {
-        if (+this.state.longTimeMinutes >= 0, +this.state.shortTimeMinutes >= 0) {
-            this.props.onSubmit(this.state)
-        }
+        this.props.onSubmit(this.state)
+        
     }
 
     handleGoBack = () => {
         this.props.goBack()
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.longTimeMinutes !== prevState.longTimeMinutes || this.state.shortTimeMinutes !== prevState.shortTimeMinutes){
-            this.validateForm()
-        }
-    }
 
     getHandler = key => {
         return val => {
@@ -41,13 +34,6 @@ export default class Settings extends React.Component {
         }
     }
 
-    validateForm = () => {
-        if (+this.state.longTimeMinutes >= 0 && +this.state.shortTimeMinutes >= 0) {
-            this.setState({isFormValid: true})
-        } else {
-            this.setState({isFormValid: false})
-        }
-    }
 
     render(){
         return(
@@ -55,7 +41,7 @@ export default class Settings extends React.Component {
             
             <KeyboardAvoidingView behaviour='padding'  style={styles.container}>
                 <View>
-                    <Button title="Go back with no change" onPress={this.handleGoBack} />
+                    <Button color='red' title="Go back with no change" onPress={this.handleGoBack} />
                 </View>
                 <Text style={styles.TopOfSettings}>Exercise Time</Text>
                 <View style={styles.colorExercice}>
@@ -105,7 +91,7 @@ export default class Settings extends React.Component {
                     />
                     </View>
                 </View>
-                <Button title="Save changes" onPress={this.handleSubmit} disabled={!this.state.isFormValid} />
+                <Button color='green' title="Save changes" onPress={this.handleSubmit}/>
             </KeyboardAvoidingView>
         )
     }

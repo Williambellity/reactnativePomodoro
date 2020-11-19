@@ -5,7 +5,8 @@ const Timer = props => {
 
     return(
         <View style={styles.container}>
-        <Text style={styles.timer}>{props.minutes}:{props.secondes}</Text>
+            <Text style={styles.timerTitle}>{props.text}</Text>
+            <Text style={styles.timer}>{props.minutes}:{props.secondes}</Text>
         </View>
     )
     
@@ -19,6 +20,11 @@ const styles = StyleSheet.create({
     timer: {
         color: 'white',
         fontSize: 100,
+        fontFamily: 'sans-serif',
+    },
+    timerTitle: {
+        color: 'white',
+        fontSize: 50,
         fontFamily: 'sans-serif',
     }
   });

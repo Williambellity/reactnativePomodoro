@@ -21,6 +21,7 @@ export default class App extends React.Component {
     counter: 1500,
     minutes: 25,
     secondes: '00',
+    text: 'Work Time',
   };
 
   vibrate = () => Vibration.vibrate([500, 500, 500])
@@ -46,11 +47,24 @@ export default class App extends React.Component {
   this.setState(prevState => ({
     buttonText: 'Start',
     longTimer: true,
+    text: 'Work Time',
     active: false,
     counter: +prevState.long,
     minutes: ~~((+prevState.long)/60),
-    secondes: '0' + prevState.long%60,
+    bgcolor: '#F8B3BC',
+    
     }));
+  if (+this.state.long%60 < 10)
+  {
+    this.setState(prevState => ({
+      secondes: '0' + prevState.long%60,
+    }))
+  }
+  else {
+    this.setState(prevState => ({
+      secondes: prevState.long%60,
+    }))
+  }
   }
 
 
@@ -88,6 +102,7 @@ export default class App extends React.Component {
     if (this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
+        text: 'Break Time',
         counter: +prevState.short,
         bgcolor: '#AAF0D1',
       }))
@@ -96,6 +111,7 @@ export default class App extends React.Component {
     if (!this.state.longTimer && this.state.counter===0){
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
+        text: 'Work Time',
         counter: +prevState.long,
         bgcolor: '#F8B3BC',
       }))
@@ -135,12 +151,16 @@ export default class App extends React.Component {
       backgroundColor: this.state.bgcolor,
     }
 
+    
+
     return (
       <View style={[styles.container, colorStyles]}>
         <SettingsButton onPress={this.toggleSettings} />
+        
         <Timer 
           minutes={this.state.minutes.toString()}
           secondes={this.state.secondes.toString()} 
+          text={this.state.text}
           />
         
         <SSRButton 
