@@ -11,7 +11,6 @@ import SettingsButton from './SettingsButton'
 
 export default class App extends React.Component {
   state = {
-    buttonText: 'Start',
     showForm: false,
     longTimer: true,
     long: 1500,
@@ -23,7 +22,6 @@ export default class App extends React.Component {
   vibrate = () => Vibration.vibrate([500, 500, 500])
 
   getNewTimer = newTimer => {
-
     this.setState(prevState => ({
       long: 60*(+newTimer.longTimeMinutes) + +newTimer.longTimeSeconds,
       break: 60*(+newTimer.breakTimeMinutes) + +newTimer.breakTimeSeconds,
@@ -40,7 +38,6 @@ export default class App extends React.Component {
 
   handleReset = () => {
   this.setState(prevState => ({
-    buttonText: 'Start',
     longTimer: true,
     active: false,
     counter: +prevState.long,
@@ -51,7 +48,6 @@ export default class App extends React.Component {
   handleStartStop = () => {
     this.setState(prevState => ({
       active: !prevState.active,
-      buttonText: (!prevState.active)?'Stop':'Start'
     }))
   }
 
@@ -70,18 +66,11 @@ export default class App extends React.Component {
   }
 
   tick = () => {
-    if (this.state.longTimer && this.state.counter===0){
+    if (this.state.counter-1===0){
       this.setState(prevState => ({
         longTimer: !prevState.longTimer,
-        counter: +prevState.break,
+        counter: (!prevState.longTimer)?+prevState.break:+prevState.long,
       }))
-      
-    }
-    if (!this.state.longTimer && this.state.counter===0){
-      this.setState(prevState => ({
-        longTimer: !prevState.longTimer,
-        counter: +prevState.long,
-      }))  
     }
     if (this.state.active && this.state.counter>=0) {
       let currentCounter = this.state.counter
@@ -103,8 +92,6 @@ export default class App extends React.Component {
       backgroundColor: (this.state.longTimer)?'#F8B3BC':'#AAF0D1',
     }
 
-    
-
     return (
       <View style={[styles.container, colorStyles]}>
         <SettingsButton onPress={this.toggleSettings} />
@@ -118,7 +105,7 @@ export default class App extends React.Component {
         <SSRButton 
           startStop={this.handleStartStop} 
           reset={this.handleReset}
-          text={this.state.buttonText}
+          text={(this.state.active)?'Stop':'Start'}
            />
       </View>
     );
